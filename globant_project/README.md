@@ -2,7 +2,6 @@
 
 A complete proof-of-concept (PoC) for historical data migration, REST API data ingestion, validation, and AVRO backup/restore functionality.
 
-**Status**: ✅ Ready for Production
 
 ---
 
@@ -29,7 +28,7 @@ A complete proof-of-concept (PoC) for historical data migration, REST API data i
 - Support for 3 tables: departments, jobs, hired_employees
 
 ✅ **REST API for Data Ingestion**
-- Separate endpoints per table (clean & maintainable)
+- Separate endpoints per table 
 - Batch ingestion (1-1000 rows per request)
 - JSON request/response format
 - Partial success handling (insert valid, reject invalid)
@@ -64,14 +63,11 @@ cd globant_challenge
 python -m venv venv
 
 # Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-
-# On Windows:
+# Windows:
 venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt #(flask,pandas,sqlalchemy,fastavro,python-dotenv,requests)
 
 # Create necessary directories (if not exists)
 mkdir -p data backup logs
@@ -79,7 +75,7 @@ mkdir -p data backup logs
 # Copy your CSV files to data/ folder
 # - data/departments.csv
 # - data/jobs.csv
-# - data/hired_employees__1_.csv
+# - data/hired_employees.csv
 ```
 
 ### 3. Run
@@ -104,13 +100,13 @@ python src/main.py
 📥 Loading historical data from CSV files...
 ✅ Data loaded successfully!
    - Departments: 12 records
-   - Jobs: 320 records
-   - Hired Employees: 37544 records
+   - Jobs: 183 records
+   - Hired Employees: 1929 records
 
 🔍 Checking data quality...
 ✅ Data quality check complete:
-   - Valid employees: 37000 (approx)
-   - Invalid employees: 544 (approx)
+   - Valid employees: 1929 (approx)
+   - Invalid employees: 0 (approx)
    - Issues found and logged to: logs/error.log
 
 ============================================================
@@ -135,7 +131,7 @@ python src/main.py
 globant_challenge/
 ├── src/
 │   ├── __init__.py
-│   ├── main.py                 # Entry point - Start here!
+│   ├── main.py                 # Entry point 
 │   ├── database.py             # Database setup & CSV loading
 │   ├── validation.py           # All validation rules
 │   ├── api.py                  # Flask REST API
@@ -662,15 +658,6 @@ curl -X POST http://localhost:5000/api/restore \
 - ✅ **Scalability**: Different validation rules per table
 - ✅ **REST Best Practice**: Follows RESTful conventions
 - ✅ **Error Handling**: Specific error messages per table
-
-**Alternative (Not Chosen): Generic Endpoint**
-```
-POST /api/ingest?table=hired_employees
-```
-❌ More complex parameter handling
-❌ Harder to maintain
-❌ Violates REST conventions
-
 ---
 
 ### 2. **Validation Module (Centralized)**
@@ -697,7 +684,7 @@ validation.py
 
 ---
 
-### 3. **SQLite Database (Not PostgreSQL/MySQL)**
+### 3. **SQLite Database **
 
 **Decision:** Use SQLite for simplicity
 
@@ -708,22 +695,20 @@ validation.py
 - ✅ **Sufficient**: Perfect for PoC and testing
 - ✅ **ACID Compliance**: Transactions work perfectly
 
-**For Production:** Migration to PostgreSQL is straightforward
 
 ---
 
-### 4. **Flask (Not FastAPI)**
+### 4. **RESR API **
 
 **Decision:** Use Flask for REST API
 
 **Why?**
 - ✅ **Simple**: Less boilerplate than FastAPI
 - ✅ **Lightweight**: Quick to get running
-- ✅ **Learning Curve**: Easier to understand
+- ✅ **Easier to understand**
 - ✅ **Sufficient**: Handles all requirements
 - ✅ **Proven**: Battle-tested in production
 
-**For High Performance:** FastAPI would be better for async operations
 
 ---
 
@@ -747,13 +732,10 @@ if len(data) > 1000:
 
 ### 6. **AVRO for Backups**
 
-**Decision:** Use Apache AVRO format for backups
-
 **Why?**
 - ✅ **Schema Evolution**: Supports schema changes
 - ✅ **Compression**: Efficient storage
 - ✅ **Type Safety**: Enforces schema
-- ✅ **Industry Standard**: Used in data engineering
 - ✅ **Interoperability**: Works across languages/tools
 
 ---
@@ -827,7 +809,7 @@ pip install fastavro==1.8.0
    # Should show:
    # departments.csv
    # jobs.csv
-   # hired_employees__1_.csv
+   # hired_employees.csv
    ```
 
 2. If using different filenames, update `load_historical_data()` in `database.py`
@@ -880,38 +862,16 @@ The API already handles this with validation. Check:
 
 ### Error Handling
 - ✅ Detailed error messages for validation failures
-- ✅ No sensitive information leaked in API responses
 - ✅ All errors logged to file for debugging
 
-### Production Recommendations
-- 🔐 Add authentication (JWT or OAuth2)
-- 🔐 Add rate limiting to prevent abuse
-- 🔐 Use HTTPS/TLS encryption
-- 🔐 Add request size limits
-- 🔐 Implement audit logging
 
 ---
-
-## 📚 Additional Resources
-
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [SQLite Documentation](https://www.sqlite.org/docs.html)
-- [Apache AVRO](https://avro.apache.org/)
-- [Python Datetime ISO Format](https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat)
 
 ---
 
 ## 📞 Support
 
-If you encounter issues:
-
 1. **Check logs**: `tail logs/error.log`
 2. **Test endpoint**: `curl http://localhost:5000/health`
 3. **Verify database**: `sqlite3 globant_challenge.db ".tables"`
 4. **Read error messages**: API responses include detailed error information
-
----
-
-**Built with ❤️ for the Globant Data Engineer Challenge**
-
-Version 1.0 | January 2024

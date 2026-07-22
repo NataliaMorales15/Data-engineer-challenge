@@ -1,6 +1,5 @@
 """
 Backup & Restore Module - AVRO Format
-Handles export/import of tables in AVRO format
 """
 
 import fastavro
